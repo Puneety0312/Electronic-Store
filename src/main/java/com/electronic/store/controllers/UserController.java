@@ -43,9 +43,11 @@ public class UserController {
     @GetMapping()
     public ResponseEntity<List<UserDto>> getAllUsers(
             @RequestParam(value="pageNumber",defaultValue = "0" ,required  = false) int pageNumber,
-            @RequestParam(value="pageSize", defaultValue = "0", required =false) int pageSize
+            @RequestParam(value="pageSize", defaultValue = "0", required =false) int pageSize,
+            @RequestParam(value="sortBy",defaultValue = "name" ,required  = false) String sortBy,
+            @RequestParam(value="sortDir", defaultValue = "asc", required =false) String sortDir
     ){
-        List<UserDto> listOfUsers = userService.getAllUser(pageNumber,pageSize);
+        List<UserDto> listOfUsers = userService.getAllUser(pageNumber,pageSize,sortBy,sortDir);
         return new ResponseEntity<>(listOfUsers, HttpStatus.OK);
     }
     //getSingle
