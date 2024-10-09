@@ -1,6 +1,7 @@
 package com.electronic.store.services;
 
 import com.electronic.store.config.ProjectConfig;
+import com.electronic.store.dto.PageableResponse;
 import com.electronic.store.dto.UserDto;
 import com.electronic.store.entities.User;
 import com.electronic.store.repositories.UserRepository;
@@ -26,6 +27,9 @@ public class UserServiceImpl implements  UserService{
 
     @Autowired
     private ProjectConfig config;
+
+    @Autowired
+    private PageableResponse<UserDto> pageableResponse;
 
     @Override
     public UserDto create(UserDto userDto) {
@@ -57,13 +61,19 @@ public class UserServiceImpl implements  UserService{
     }
 
     @Override
-    public List<UserDto> getAllUser(int pageNumber, int pageSize, String sortBy, String sortDir) {
+    public PageableResponse<UserDto> getAllUser(int pageNumber, int pageSize, String sortBy, String sortDir) {
         Sort sort = (sortDir.equalsIgnoreCase("asc"))?Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNumber,pageSize, sort);
         Page<User> page = userRepository.findAll(pageable);
         List<User> users = page.getContent();
         List<UserDto> userDtos = users.stream().map(user -> entityToDto(user)).collect(Collectors.toList());
-        return userDtos;
+        pageableResponse.setContent(userDtos);
+        pageableResponse.setPageNumber(pageNumber);
+        pageableResponse.setPageSize(pageSize);
+        pageableResponse.setTotalElements(page.getTotalElements());
+        pageableResponse.setTotalPages(page.getTotalPages());
+        pageableResponse.setLastPage(page.isLast());
+        return pageableResponse;
     }
 
     @Override
