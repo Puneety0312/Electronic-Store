@@ -56,8 +56,6 @@ public class UserServiceImpl implements  UserService{
         userRepository.delete(user);
     }
 
-
-
     @Override
     public List<UserDto> getAllUser(int pageNumber, int pageSize, String sortBy, String sortDir) {
         Sort sort = (sortDir.equalsIgnoreCase("asc"))?Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
