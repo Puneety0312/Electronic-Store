@@ -21,9 +21,9 @@ public class FileServiceImpl implements FileService {
         logger.info("Filename : {}",orignalFile);
 
         String filename = UUID.randomUUID().toString();
-        String ext = orignalFile.substring(filename.lastIndexOf("."));
+        String ext = orignalFile.substring(orignalFile.lastIndexOf("."));
         String newFileName = filename+ext;
-        String fullPath = path+ File.separator+newFileName;
+        String fullPath = path+newFileName;
         if(ext.equalsIgnoreCase(".png") || ext.equalsIgnoreCase(".jpg") || ext.equalsIgnoreCase(".jpeg")){
             File folder = new File(path);
             if(!folder.exists()){
@@ -40,7 +40,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public InputStream getFile(String path, String name) throws FileNotFoundException {
-        String filePath = path + File.separator + name;
+        String filePath =  name;
         InputStream inputStream = new FileInputStream(filePath);
         return inputStream;
     }

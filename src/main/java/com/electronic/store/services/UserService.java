@@ -4,6 +4,7 @@ import com.electronic.store.dto.PageableResponse;
 import com.electronic.store.dto.UserDto;
 import com.electronic.store.entities.User;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface UserService {
@@ -13,7 +14,7 @@ public interface UserService {
     UserDto updateUser(UserDto userDto, int id);
 
     //delete
-    void deleteUser(int id);
+    void deleteUser(int id) throws IOException;
 
     //getAllUser
     PageableResponse<UserDto> getAllUser(int pageNumber, int pageSize, String sortBy, String sortDir);

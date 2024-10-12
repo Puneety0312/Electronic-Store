@@ -7,12 +7,21 @@ import com.electronic.store.entities.User;
 import com.electronic.store.repositories.UserRepository;
 import jakarta.persistence.Entity;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +39,11 @@ public class UserServiceImpl implements  UserService{
 
     @Autowired
     private PageableResponse<UserDto> pageableResponse;
+
+    @Value("${user.profile.image.path}")
+    private String imagePath;
+
+    private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
     public UserDto create(UserDto userDto) {
@@ -57,7 +71,19 @@ public class UserServiceImpl implements  UserService{
     @Override
     public void deleteUser(int id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        userRepository.delete(user);
+        userRepository.deleteById(user.getId());
+        //String fullPath = user.getImageName();
+//        try{
+//            Path path = Paths.get(fullPath);
+//            Files.delete(path);
+//        }
+//        catch (NoSuchFileException ex){
+//            logger.info("No image found for user");
+//            ex.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
     }
 
     @Override

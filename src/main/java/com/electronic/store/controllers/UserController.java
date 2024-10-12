@@ -1,13 +1,24 @@
 package com.electronic.store.controllers;
 
 import com.electronic.store.dto.ApiMessage;
+import com.electronic.store.dto.ImageResponse;
 import com.electronic.store.dto.PageableResponse;
 import com.electronic.store.dto.UserDto;
+import com.electronic.store.services.FileService;
 import com.electronic.store.services.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -16,6 +27,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FileService fileService;
+
+    @Value("${user.profile.image.path}")
+    private  String imagePath;
 
     //private PageableResponse<UserDto> pageableResponse;
     //create
@@ -32,8 +49,8 @@ public class UserController {
     }
     //delete
     @DeleteMapping("/{userId}")
-    public ResponseEntity<ApiMessage> deleteUser(@PathVariable int userId){
-        userService.deleteUser(userId);
+    public ResponseEntity<ApiMessage> deleteUser(@PathVariable int userId) throws IOException {
+            userService.deleteUser(userId);
         ApiMessage message= ApiMessage.builder()
                  .message("User deleted successfully!!")
                 .status(HttpStatus.OK)
@@ -45,7 +62,7 @@ public class UserController {
     @GetMapping()
     public ResponseEntity<PageableResponse<UserDto>> getAllUsers(
             @RequestParam(value="pageNumber",defaultValue = "0" ,required  = false) int pageNumber,
-            @RequestParam(value="pageSize", defaultValue = "0", required =false) int pageSize,
+            @RequestParam(value="pageSize", defaultValue = "1", required =false) int pageSize,
             @RequestParam(value="sortBy",defaultValue = "name" ,required  = false) String sortBy,
             @RequestParam(value="sortDir", defaultValue = "asc", required =false) String sortDir
     ){
@@ -66,5 +83,31 @@ public class UserController {
     @GetMapping("/search/{keywords}")
     public ResponseEntity<List<UserDto>> searchUser(@PathVariable String keywords){
         return new ResponseEntity<>(userService.search(keywords), HttpStatus.OK);
+    }
+    //upload image
+    @PostMapping("/userImage/{userId}")
+    public ResponseEntity<ImageResponse> uploadUserImage(@RequestParam("userImage")MultipartFile image, @PathVariable int userId) throws IOException {
+        String imgName = fileService.uploadFile(image,imagePath);
+        UserDto user = userService.getUserById(userId);
+        user.setImageName(imgName);
+        userService.updateUser(user,userId);
+        ImageResponse imageResponse= ImageResponse
+                .builder()
+                .imageName(imgName)
+                .message("Successfully Uploaded!!")
+                .success(true)
+                .status(HttpStatus.CREATED)
+                .build();
+        return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
+    }
+
+    //serve Image
+    @GetMapping("/image/{userId}")
+    public void serveUserImage(@PathVariable int userId, HttpServletResponse response) throws IOException {
+        UserDto user = userService.getUserById(userId);
+        String imgName = user.getImageName();
+        InputStream file = fileService.getFile(imagePath,imgName);
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        StreamUtils.copy(file, response.getOutputStream());
     }
 }
