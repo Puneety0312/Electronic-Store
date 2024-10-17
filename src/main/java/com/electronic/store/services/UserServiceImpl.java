@@ -71,21 +71,20 @@ public class UserServiceImpl implements  UserService{
     @Override
     public void deleteUser(int id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        String fullPath = user.getImageName();
+        try{
+            Path path = Paths.get(fullPath);
+            Files.delete(path);
+        }
+        catch (NoSuchFileException ex){
+            logger.info("No image found for user");
+            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         userRepository.deleteById(user.getId());
-        //String fullPath = user.getImageName();
-//        try{
-//            Path path = Paths.get(fullPath);
-//            Files.delete(path);
-//        }
-//        catch (NoSuchFileException ex){
-//            logger.info("No image found for user");
-//            ex.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
     }
-
     @Override
     public PageableResponse<UserDto> getAllUser(int pageNumber, int pageSize, String sortBy, String sortDir) {
         Sort sort = (sortDir.equalsIgnoreCase("asc"))?Sort.by(sortBy).ascending():Sort.by(sortBy).descending();

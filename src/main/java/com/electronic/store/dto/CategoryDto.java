@@ -11,7 +11,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class CategoryDto {
-
     private int id;
     @NotBlank
     @Min(value = 4)
