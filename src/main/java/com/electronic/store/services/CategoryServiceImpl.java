@@ -4,9 +4,7 @@ import com.electronic.store.config.ProjectConfig;
 import com.electronic.store.dto.CategoryDto;
 import com.electronic.store.dto.Helper;
 import com.electronic.store.dto.PageableResponse;
-import com.electronic.store.dto.UserDto;
 import com.electronic.store.entities.Category;
-import com.electronic.store.entities.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.electronic.store.repositories.CategoryRepository;
@@ -14,11 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
+@Service
 public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
