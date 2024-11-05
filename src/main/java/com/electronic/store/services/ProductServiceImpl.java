@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -41,21 +42,27 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ProductDto get(String id) {
-        return null;
+       Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+       return modelMapper.map(product, ProductDto.class);
     }
-
     @Override
     public List<ProductDto> getAll() {
-        return null;
+        List<Product> products = productRepository.findAll();
+        List<ProductDto> productDtos = products.stream().map((product) -> modelMapper.map(product, ProductDto.class)).collect(Collectors.toList());
+        return productDtos;
     }
 
     @Override
     public List<ProductDto> getAllLive() {
-        return null;
+        List<Product> products = productRepository.findByLiveTrue();
+        List<ProductDto> productDtos = products.stream().map((product) -> modelMapper.map(product, ProductDto.class)).collect(Collectors.toList());
+        return productDtos;
     }
 
     @Override
     public List<ProductDto> searchByTitle(String subTitle) {
-        return null;
+       List<Product> products = productRepository.findByTitleContaining(subTitle);
+        List<ProductDto> productDtos = products.stream().map((product) -> modelMapper.map(product, ProductDto.class)).collect(Collectors.toList());
+        return productDtos;
     }
 }
