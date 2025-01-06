@@ -3,7 +3,9 @@ package com.electronic.store.controllers;
 import com.electronic.store.dto.ApiMessage;
 import com.electronic.store.dto.CategoryDto;
 import com.electronic.store.dto.PageableResponse;
+import com.electronic.store.dto.ProductDto;
 import com.electronic.store.services.CategoryService;
+import com.electronic.store.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +17,21 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private ProductService productService;
+
     //create
     @PostMapping
     public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto){
         CategoryDto categoryDto1 = categoryService.create(categoryDto);
         return new ResponseEntity<>(categoryDto1, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{categoryId}/products")
+    public ResponseEntity<ProductDto> createProductByCategory(@RequestBody ProductDto productDto,
+                                                              @PathVariable("categoryId") int categoryId){
+        ProductDto productDto1 = productService.createByCategory(productDto, categoryId);
+        return new ResponseEntity<>(productDto1, HttpStatus.CREATED);
     }
     //update
     @PutMapping("/{categoryId}")

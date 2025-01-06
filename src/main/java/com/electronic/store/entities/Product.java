@@ -1,9 +1,6 @@
 package com.electronic.store.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,11 +19,16 @@ public class Product {
     private String productId;
     private String title;
     private int quantity;
-    private boolean isStock;
+    private boolean stock;
     @Column(length = 1000)
     private String description;
     private double price;
     private int discountPrice;
     private Date date;
-    private boolean isLive;
+    private boolean live;
+    private String productImage;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

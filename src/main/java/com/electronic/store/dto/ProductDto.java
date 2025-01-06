@@ -15,9 +15,10 @@ public class ProductDto {
     private String title;
     private String description;
     private int quantity;
-    private boolean isStock;
+    private boolean stock;
     private double price;
     private int discountPrice;
     private Date date;
-    private boolean isLive;
+    private boolean live;
+    private String productImage;
 }
