@@ -72,6 +72,19 @@ public class CategoryController {
         PageableResponse<CategoryDto> pageableResponse = categoryService.getAll(pageNumber, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(pageableResponse, HttpStatus.OK);
     }
+
+    @GetMapping("/{categoryId}/products")
+    public ResponseEntity<PageableResponse<ProductDto>> getProductsByCategory(
+            @PathVariable int categoryId,
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "title", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir){
+
+            PageableResponse<ProductDto> products = productService.getAllByCategory(categoryId, pageNumber,pageSize,sortBy,sortDir);
+            return new ResponseEntity<>(products,HttpStatus.OK);
+    }
+
     @GetMapping("/{categoryId}")
     public ResponseEntity<CategoryDto> getSingle(@PathVariable int categoryId) {
         CategoryDto categoryDto = categoryService.get(categoryId);

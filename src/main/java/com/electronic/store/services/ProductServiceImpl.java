@@ -1,6 +1,7 @@
 package com.electronic.store.services;
 
-import com.electronic.store.dto.ApiMessage;
+import com.electronic.store.dto.Helper;
+import com.electronic.store.dto.PageableResponse;
 import com.electronic.store.dto.ProductDto;
 import com.electronic.store.entities.Category;
 import com.electronic.store.entities.Product;
@@ -8,6 +9,10 @@ import com.electronic.store.repositories.CategoryRepository;
 import com.electronic.store.repositories.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -26,6 +31,9 @@ public class ProductServiceImpl implements ProductService{
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+  //  @Autowired
+  //  private Helper helper;
 
     @Override
     public ProductDto create(ProductDto productDto) {
@@ -85,6 +93,15 @@ public class ProductServiceImpl implements ProductService{
         List<Product> products = productRepository.findAll();
         List<ProductDto> productDtos = products.stream().map((product) -> modelMapper.map(product, ProductDto.class)).collect(Collectors.toList());
         return productDtos;
+    }
+
+    @Override
+    public PageableResponse<ProductDto> getAllByCategory(int categoryId, int pageNumber, int pageSize, String sortBy, String sortDir) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category Id not found"));
+        Sort sort = (sortDir.equalsIgnoreCase("desc")) ? (Sort.by(sortBy).descending()):(Sort.by(sortBy).ascending());
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
+        Page<Product> products = productRepository.findByCategory(category, pageable);
+        return Helper.getPageableResponse(products , ProductDto.class);
     }
 
     @Override
