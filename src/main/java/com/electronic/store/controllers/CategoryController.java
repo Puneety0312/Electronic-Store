@@ -42,6 +42,13 @@ public class CategoryController {
         CategoryDto updatedCategory = categoryService.update(categoryDto, categoryId);
         return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
     }
+
+    @PutMapping("/{categoryId}/products/{productId}")
+    public  ResponseEntity<ProductDto> updateCategoryOfProduct(@PathVariable int categoryId,
+                                                               @PathVariable String productId){
+        ProductDto productDto =productService.updateCategory(productId,categoryId);
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
+    }
     //delete
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<ApiMessage> deleteCategory(

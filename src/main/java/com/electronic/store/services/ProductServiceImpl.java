@@ -52,6 +52,15 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public ProductDto updateCategory(String productId, int categoryId) {
+        Product product = productRepository.findById(productId).orElseThrow(()-> new RuntimeException("Product cannot be found"));
+        Category category= categoryRepository.findById(categoryId).orElseThrow(()-> new RuntimeException("Category cannot be found"));
+        product.setCategory(category);
+        Product savedProduct = productRepository.save(product);
+        return modelMapper.map(savedProduct, ProductDto.class);
+    }
+
+    @Override
     public ProductDto update(ProductDto productDto, String id) {
         Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
         product.setTitle(productDto.getTitle());
