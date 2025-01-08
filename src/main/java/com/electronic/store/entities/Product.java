@@ -22,7 +22,7 @@ public class Product {
     private boolean stock;
     @Column(length = 1000)
     private String description;
-    private double price;
+    private int price;
     private int discountPrice;
     private Date date;
     private boolean live;

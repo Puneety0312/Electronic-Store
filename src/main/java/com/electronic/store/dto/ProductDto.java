@@ -16,7 +16,7 @@ public class ProductDto {
     private String description;
     private int quantity;
     private boolean stock;
-    private double price;
+    private int price;
     private int discountPrice;
     private Date date;
     private boolean live;

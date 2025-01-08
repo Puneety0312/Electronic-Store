@@ -8,6 +8,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class AddItemToCart {
-    private int productId;
+    private String productId;
     private int quantity;
 }
