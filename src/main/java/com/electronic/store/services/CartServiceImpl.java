@@ -54,6 +54,7 @@ public class CartServiceImpl implements  CartService
             cart.setCartId(UUID.randomUUID().toString());
             cart.setCreatedAt(new Date());
         }
+        cart.setTotalPrice(cart.getTotalPrice()+product.getDiscountPrice()*quantity);
         List<CartItem> itemList = cart.getItems();
         AtomicBoolean flag = new AtomicBoolean(false);
         List<CartItem> updatedItems = itemList.stream()

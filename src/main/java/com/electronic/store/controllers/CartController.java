@@ -21,7 +21,7 @@ public class CartController {
        return new ResponseEntity<>(cartDto, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{itemId}")
+    @DeleteMapping("/item/{itemId}")
     public ResponseEntity<ApiMessage> removeItem(@PathVariable int itemId){
         cartService.removeItem(itemId);
         ApiMessage message = ApiMessage.builder()
